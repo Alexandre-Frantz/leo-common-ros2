@@ -682,7 +682,7 @@
             <horizontal_fov> 1.047 </horizontal_fov>        <!-- 1.48702 or 1.58702 for  -->
             <clip>
               <near>0.1</near>
-              <far>5.0</far>
+              <far>10.0</far>
             </clip>
             <depth_camera>
               <output>depths</output>
