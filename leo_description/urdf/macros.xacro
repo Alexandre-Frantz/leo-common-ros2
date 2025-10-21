@@ -589,27 +589,27 @@
     <gazebo reference="${link_prefix}livox_frame">
       <sensor name="gpu_lidar" type="gpu_lidar">
         <pose>0 0 0 0 0 0</pose>
-        <topic>livox/lidar</topic>
+        <topic>${link_prefix}livox/lidar</topic>
         <update_rate>10</update_rate>
         <visualize>true</visualize>
         <ray>
           <scan>
             <horizontal>
-              <samples>640</samples>
+              <samples>640</samples> <!--640--> <!--3333-->
               <resolution>1</resolution>
               <min_angle>-3.141592</min_angle>
               <max_angle>3.141592</max_angle>
             </horizontal>
             <vertical>
-                <samples>40</samples>
+                <samples>60</samples>  <!--40--> <!--60-->
                 <resolution>1</resolution>
                 <min_angle>-0.122173</min_angle>
                 <max_angle>0.9075712</max_angle>
             </vertical>
           </scan>
           <range>
-            <min>0.1</min>
-            <max>20.0</max>
+            <min>0.05</min>
+            <max>10.0</max>
             <resolution>0.01</resolution>
           </range>
           <noise>
@@ -669,7 +669,7 @@
     -->
     <gazebo reference="${link_prefix}realsense_camera_link">
       <sensor name="realsense_d455" type="rgbd_camera">
-          <topic>${link_prefix}leo/realsense_d455</topic>
+          <topic>${link_prefix}realsense_d455</topic>
           <ignition_frame_id>${link_prefix}rs_optical_frame</ignition_frame_id>
           <always_on>1</always_on>
           <update_rate>15.0</update_rate>
@@ -688,7 +688,8 @@
               <output>depths</output>
               <clip>
                 <near>0.1</near>
-                <far>3.0</far>
+                <!-- <far>3.0</far> -->
+                <far> 6.0 </far>
               </clip>
             </depth_camera>
             <lens>
