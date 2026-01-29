@@ -383,11 +383,19 @@
     
     <!-- LiDAR joints -->
 
+    <!-- Default LiDAR Position -->
     <joint name="${joint_prefix}lidar_plate_joint" type="fixed">
       <origin xyz="0.046 0 0.0073" rpy="0 0 0"/> <!-- 0.045 -->
       <parent link="${link_prefix}base_link"/>
       <child link="${link_prefix}livox_plate_frame"/>
     </joint>
+
+    <!-- Upside Down LiDAR Position -->
+    <!-- <joint name="${joint_prefix}lidar_plate_joint" type="fixed">
+      <origin xyz="0.046 0 0.15" rpy="3.14159 0 0"/>
+      <parent link="${link_prefix}base_link"/>
+      <child link="${link_prefix}livox_plate_frame"/>
+    </joint> -->
 
     <joint name="${joint_prefix}lidar_joint" type="fixed">
       <origin xyz="0 0 0.048168" rpy="0 0 0"/> <!-- y= 0.049168-->
