@@ -202,9 +202,9 @@
       </inertial>
       <visual>
         <origin xyz="0 0 0" rpy="0 0 0"/>
-        <geometry>
+        <!-- <geometry>
           <mesh filename="package://leo_description/models/Realsense-Front-Facing-Mount-origin.dae"/>
-        </geometry>
+        </geometry> -->
       </visual>
       <collision>
         <origin xyz="0 0 0"/>
@@ -240,7 +240,7 @@
       </collision>
     </link>
 
-    <link name="${link_prefix}livox_plate_frame">
+    <!-- <link name="${link_prefix}livox_plate_frame">
       <inertial>
         <mass value="0.265"/>
         <origin xyz="0 0 0"/>
@@ -261,7 +261,50 @@
           <cylinder radius="0.07" length="0.06"/>
         </geometry>
       </collision>
+    </link> -->
+
+    <!-- NEW upside down LiDAR configration Links - joints -->
+
+
+    <link name="${link_prefix}livox_tower_mount_frame">
+      <inertial>
+        <mass value="0.265"/>
+        <origin xyz="0 0 0"/>
+      <inertia
+          ixx="2.5529e-7" ixy="0.0" ixz="0.0"
+          iyy="2.5529e-7" iyz="0.0"
+          izz="1.354e-8"/>
+      </inertial>
+      <visual>
+        <origin xyz="0 0 -0.003" rpy="0 0 0"/>
+        <geometry>
+          <mesh filename="package://leo_description/models/LeoRover-Livox-Inverted-Mount-v2.dae"/>
+        </geometry>
+      </visual>
+      <collision>
+        <origin xyz="0 0 0"/>
+        <geometry>
+          <cylinder radius="0.07" length="0.06"/>
+        </geometry>
+      </collision>
     </link>
+
+
+    <joint name="${joint_prefix}livox_tower_mount_joint" type="fixed">
+      <origin xyz="0 0 0.006" rpy="0 0 0"/>
+      <parent link="${link_prefix}base_link"/>
+      <child link="${link_prefix}livox_tower_mount_frame"/>
+    </joint>
+
+    <joint name="${joint_prefix}lidar_joint" type="fixed">
+      <origin xyz="0.0387 0 0.16095" rpy="3.14159 -0.174533000003812 0"/> 
+      <parent link="${link_prefix}livox_tower_mount_frame"/>
+      <child link="${link_prefix}livox_frame"/>
+    </joint>
+
+
+    <!-- END New Links - Frames -->
+
 
     <!-- JOINTS -->
 
@@ -384,11 +427,12 @@
     <!-- LiDAR joints -->
 
     <!-- Default LiDAR Position -->
-    <joint name="${joint_prefix}lidar_plate_joint" type="fixed">
-      <origin xyz="0.046 0 0.0073" rpy="0 0 0"/> <!-- 0.045 -->
+    <!-- <joint name="${joint_prefix}lidar_plate_joint" type="fixed">
+      <origin xyz="0.046 0 0.0073" rpy="0 0 0"/> 
       <parent link="${link_prefix}base_link"/>
       <child link="${link_prefix}livox_plate_frame"/>
-    </joint>
+    </joint> -->
+    <!--x= 0.045 -->
 
     <!-- Upside Down LiDAR Position -->
     <!-- <joint name="${joint_prefix}lidar_plate_joint" type="fixed">
@@ -397,22 +441,37 @@
       <child link="${link_prefix}livox_plate_frame"/>
     </joint> -->
 
-    <joint name="${joint_prefix}lidar_joint" type="fixed">
-      <origin xyz="0 0 0.048168" rpy="0 0 0"/> <!-- y= 0.049168-->
+    <!-- <joint name="${joint_prefix}lidar_joint" type="fixed">
+      <origin xyz="0 0 0.048168" rpy="0 0 0"/> 
       <parent link="${link_prefix}livox_plate_frame"/>
       <child link="${link_prefix}livox_frame"/>
-    </joint>
+    </joint> -->
+    <!-- y= 0.049168-->
 
     <!-- Realsense joints -->
 
-    <joint name="${joint_prefix}realsense_mount_joint" type="fixed">
+    <!-- <joint name="${joint_prefix}realsense_mount_joint" type="fixed">
         <origin xyz="0.117 0 0.0085" rpy="0 0 0"/>
         <parent link="${link_prefix}base_link"/>
+        <child link="${link_prefix}realsense_camera_mount"/>
+    </joint> -->
+
+    <!-- 
+    <joint name="${joint_prefix}realsense_joint" type="fixed">
+        <origin xyz="0.04052 0.0576 0.006" rpy="0 0 0"/>
+        <parent link="${link_prefix}realsense_camera_mount"/>
+        <child link="${link_prefix}realsense_camera_link"/>
+    </joint> -->
+
+    <!-- NEW RGB-D Joints for Upside down LiDAR config-->
+    <joint name="${joint_prefix}realsense_mount_joint" type="fixed">
+        <origin xyz="0.06713 0 0.22297" rpy="0 0 0"/>
+        <parent link="${link_prefix}livox_tower_mount_frame"/>
         <child link="${link_prefix}realsense_camera_mount"/>
     </joint>
 
     <joint name="${joint_prefix}realsense_joint" type="fixed">
-        <origin xyz="0.04052 0.0576 0.006" rpy="0 0 0"/>
+        <origin xyz="0.04450 0.0576 0.02850" rpy="0 0.174533 0"/>
         <parent link="${link_prefix}realsense_camera_mount"/>
         <child link="${link_prefix}realsense_camera_link"/>
     </joint>
