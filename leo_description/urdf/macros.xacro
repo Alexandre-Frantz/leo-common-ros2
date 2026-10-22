@@ -487,7 +487,8 @@
   <!-- LEO GAZEBO -->
 
   <xacro:macro name="leo_gazebo"
-               params="robot_ns:='''">
+               params="sim_camera:=false
+                       robot_ns:='''">
 
     <xacro:property name="link_prefix" value=""/>
     <xacro:if value="${robot_ns != '' and robot_ns != '/'}">
@@ -690,6 +691,14 @@
     </gazebo>
 
     <!-- camera -->
+    <!-- Off by default (sim_camera:=false). The SLAM pipeline is LiDAR-only
+         (rtabmap: subscribe_rgb/subscribe_depth False), yet this sensor is
+         always_on at 640x480 @ 30 Hz: ~28 MB/s GPU->CPU readback per rover,
+         rendered in the same single sensor thread as the gpu_lidar, so each
+         camera frame delays a LiDAR frame. With 3 rovers the LiDARs fell to
+         ~4.5 Hz sim-time (10 Hz configured). Enable with sim_camera:=true.
+         The RealSense (rgbd_camera) below is deliberately NOT gated. -->
+    <xacro:if value="${sim_camera}">
     <gazebo reference="${link_prefix}camera_frame">
       <sensor name="camera" type="camera">
           <camera name="leo_camera">
@@ -724,6 +733,7 @@
           <ignition_frame_id>${link_prefix}camera_frame</ignition_frame_id>
       </sensor>
     </gazebo>
+    </xacro:if>
 
     <!-- Realsense camera -->
     <!--
@@ -739,7 +749,10 @@
           <topic>${link_prefix}realsense_d455</topic>
           <ignition_frame_id>${link_prefix}rs_optical_frame</ignition_frame_id>
           <always_on>1</always_on>
-          <update_rate>15.0</update_rate>
+          <!-- 15 -> 5 Hz (2026-10-22): the RealSense was the largest remaining load on
+               Gazebo's single sensor-render thread (~32 MB/s readback per rover vs
+               ~12 MB/s for the LiDAR), starving gpu_lidar of frames with 3 rovers. -->
+          <update_rate>5.0</update_rate>
           <camera name="d455">
             <image>
               <format>R8G8B8</format>                       <!-- For 720p res -->
@@ -849,7 +862,8 @@
                params="default_antenna:=true 
                        fixed:=false
                        robot_ns:=''
-                       mecanum_wheels:=false">
+                       mecanum_wheels:=false
+                       sim_camera:=false">
 
     <xacro:property name="link_prefix" value=""/>
     <xacro:if value="${robot_ns != '' and robot_ns != '/'}">
@@ -861,7 +875,7 @@
                link_prefix="${link_prefix}"
                mecanum_wheels="${mecanum_wheels}"/>
 
-    <xacro:leo_gazebo robot_ns="${robot_ns}"/>
+    <xacro:leo_gazebo robot_ns="${robot_ns}" sim_camera="${sim_camera}"/>
 
     <xacro:if value="${fixed}">
       <link name="world"/>
